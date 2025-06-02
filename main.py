@@ -177,6 +177,7 @@ while enabled:
             lb_text_elapsed += clock.get_time()
 
         if data_time_elapsed > data_time_update:
+            data_time_elapsed = 0
             dataT = threading.Thread(name="Data Grabber Thread", target=data.dataGrabber)
             dataT.run()
         else:
