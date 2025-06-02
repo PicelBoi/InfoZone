@@ -194,16 +194,20 @@ def getNearCond():
                     logger.error(f"Could not generate the current condtions for nearby locations.")
                     logger.error(e)
 
-                pages.append(page)
+                
             except Exception as e:
                 logger.error(f"Could not grab the current condtions for {location["display_name"]}.")
                 logger.error(e)
+        
+
 
         
 
     except Exception as e:
         logger.error(f"Could not grab the current conditions for nearby locations.")
         logger.error(e)
+
+    pages.append(page)
 
 def IntroPage():
     page = {
