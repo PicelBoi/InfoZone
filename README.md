@@ -1,5 +1,7 @@
 # PicelBoi InfoZone
 
+![PicelBoi InfoZone logo](https://raw.githubusercontent.com/PicelBoi/InfoZone/refs/heads/main/images/InfoZone.svg "PicelBoi InfoZone logo")
+
 A work-in-progress 24/7 information television station.
 Better instructions will be added on once complete.
 Built for Python 3.13, but might work on 3.12.
