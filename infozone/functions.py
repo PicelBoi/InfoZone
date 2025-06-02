@@ -100,10 +100,10 @@ def render_main(screen: pygame.Surface, page):
 
     # Height of main text surface
     main_text_line_height = main_font.get_height() + spacing
-    main_text_surf_height = spacing + ((main_text_line_height) * len(page["lines"]))
+    main_text_surf_height = spacing + ((main_text_line_height) * 8)
     
     # make a new surface for the main dish
-    main_text_surf = pygame.Surface((screen.get_size()[0], main_text_surf_height))
+    main_text_surf = pygame.Surface((int(rescale(680, 0)), main_text_surf_height))
     main_text_rect = main_text_surf.get_rect()
 
     main_text_surf.fill(config["color"][darkorlight()][page["bgcolor"]])

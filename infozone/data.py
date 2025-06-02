@@ -21,6 +21,8 @@ import json
 import urllib.request
 import logging
 import datetime
+import textwrap
+from .functions import rescale
 from .config import config
 
 logger = logging.getLogger("InfoZone Data Generator")
@@ -74,6 +76,11 @@ def getLocData(locations):
         
         data = grabJSON(data["properties"]["observationStations"])
         locationdata[f"{x["geocode"][0]}{x["geocode"][1]}"]["obs"] = data["observationStations"][0]
+
+# Taken from https://www.geeksforgeeks.org/program-to-convert-fahrenheit-into-celsius/
+def fahrenheit_to_celsius(fahrenheit):
+    celsius = (fahrenheit - 32) * 5 / 9
+    return celsius
 
 def grabMainCC(x:dict):
     global pages
@@ -136,14 +143,136 @@ def grabMainCC(x:dict):
             lb_line.append(precip)
 
         except Exception as e:
-            logger.error(f"Could not generate the Current Condtions for {x["display_name"]}.")
+            logger.error(f"Could not generate the Current Conditions for {x["display_name"]}.")
             logger.error(e)
 
     except Exception as e:
-        logger.error(f"Could not grab the Current Condtions for {x["display_name"]}.")
+        logger.error(f"Could not grab the Current Conditions for {x["display_name"]}.")
         logger.error(e)
 
     pages.append(page)
+
+def getMainFcst():
+    mainLoc = config["locations"]["main"]
+    coords = mainLoc["geocode"]
+    name = mainLoc["display_name"]
+
+    page = {
+        "title": f"{name}'s Forecast",
+        "footer": "",
+        "bgcolor": "main_default_color",
+        "align": "center",
+        "duration": 10000,
+        "lines": [
+            "",
+            "",
+            "",
+            "No",
+            "Data",
+            "",
+            "",
+            ""
+        ]
+    }
+
+    data = {}
+
+    try:
+        data = grabJSON(locationdata[f"{coords[0]}{coords[1]}"]["loc"]["properties"]["forecast"])
+    except Exception as e:
+        logger.error(f"Could not grab the forecast for {name}! {e}")
+
+    try:
+        page = {
+        "title": f"{name}'s Forecast",
+        "footer": "",
+        "bgcolor": "main_default_color",
+        "align": "left",
+        "duration": 10000,
+        "lines": [
+            "",
+            "",
+            "",
+            "No",
+            "Data",
+            "",
+            "",
+            ""
+        ]
+    }
+        lines = []
+        periodindex = 0
+        for period in data["properties"]["periods"]:
+            if periodindex >= 8:
+                break
+
+            if period["isDaytime"]:
+                line = ""
+                line += datetime.datetime.fromisoformat(period["startTime"]).strftime('%a').upper() + ": "
+                line += str(int(fahrenheit_to_celsius(period["temperature"]))) + "°C "
+                line += period["shortForecast"]
+                lines.append(line)
+                
+                periodindex += 1
+        
+        page["lines"] = lines
+    except Exception as e:
+        logger.error(f"Could not generate the forecast for {name}! {e}")
+
+    pages.append(page)
+
+    # Detailed Forecast
+    linecluster = []
+    lines = []
+    width = 60
+    try:
+        for period in data["properties"]["periods"][0:7]:
+            # IT MUST NOT BE BIGGER THAN EIGHT
+            if len(lines) >= 8:
+                linecluster.append(lines[:7])
+                lines = lines[7:]
+            lines += textwrap.wrap(period["name"] + " Forecast", width=width)
+            if len(lines) >= 8:
+                linecluster.append(lines[:7])
+                lines = lines[7:]
+            lines += "\xa0"
+            if len(lines) >= 8:
+                linecluster.append(lines[:7])
+                lines = lines[7:]
+            lines += textwrap.wrap(period["detailedForecast"], width=width)
+            if len(lines) >= 8:
+                linecluster.append(lines[:7])
+                lines = lines[7:]
+            lines += "\xa0"
+            if len(lines) >= 8:
+                linecluster.append(lines[:7])
+                lines = lines[7:]
+            
+        linecluster.append(lines)
+        lines = []
+    
+        pageindex = 1
+
+        for lines in linecluster:
+            page = {
+                "title": f"{name}'s Detailed Forecast",
+                "footer": f"Page {pageindex}/{len(linecluster)}",
+                "bgcolor": "main_default_color",
+                "align": "center",
+                "duration": 30000/len(linecluster),
+                "lines": lines
+            }
+
+            pageindex += 1
+
+            pages.append(page)
+
+
+    except Exception as e:
+        logger.error(f"Could not generate detailed forecast for {name}! {e}")
+            
+
+
 
 def getNearCond():
     global pages
@@ -169,7 +298,7 @@ def getNearCond():
             "title": f"Nearby Conditions",
             "footer": "",
             "bgcolor": "main_default_color",
-            "align": "center",
+            "align": "left",
             "duration": 10000,
             "lines": [
                 "",
@@ -191,12 +320,12 @@ def getNearCond():
                     page["lines"][lineindex] = f"{location["display_name"]}: {int(data["properties"]["temperature"]["value"])}°C {data["properties"]["textDescription"]}"
                     lineindex += 1
                 except Exception as e:
-                    logger.error(f"Could not generate the current condtions for nearby locations.")
+                    logger.error(f"Could not generate the current conditions for nearby locations.")
                     logger.error(e)
 
                 
             except Exception as e:
-                logger.error(f"Could not grab the current condtions for {location["display_name"]}.")
+                logger.error(f"Could not grab the current conditions for {location["display_name"]}.")
                 logger.error(e)
         
 
@@ -310,6 +439,7 @@ def dataGrabber():
         })
     grabMainCC(config["locations"]["main"])
     getNearCond()
+    getMainFcst()
     ChannelID()
 
     grabDonePages = True
