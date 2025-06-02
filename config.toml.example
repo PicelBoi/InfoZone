@@ -35,8 +35,11 @@ data_time_update = 900000
 lb_text_duration = 5000
 
 [color]
+# Color pallete settings.
 
 [color.dark]
+# Main settings for dark mode (20:00 (8 PM) - 06:00 (6 AM))
+
 main_default_color = "#000000"
 main_alert_color = "#100000"
 
@@ -52,6 +55,7 @@ bottom_bar_text_color = "#f2f3f4"
 bottom_bar_text_color_time = "#ace7ff"
 
 [color.light]
+# Main settings for light mode (06:00 (8 PM) - 20:00 (6 AM))
 main_default_color = "#000000"
 main_alert_color = "#100000"
 
