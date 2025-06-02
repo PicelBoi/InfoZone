@@ -1,0 +1,8 @@
+# Used for rendering.
+pygame
+
+# To act as a way to transfer frames from pygame to pyav.
+numpy
+
+# Encode and livestream + add music.
+av

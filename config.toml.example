@@ -1,0 +1,71 @@
+[affiliate]
+# Affiliate name.
+name = "Generic Streamer"
+# Channel callsign.
+channel = "WPBB-TV2"
+# Platforms. Goes up to 3.
+platforms = ["Mist Streaming"]
+
+[vidoutput]
+# Output url.
+output = "rtmp://INSERT_RTMP"
+# Output format. E.G RTMP is flv, SRT is mpegts.
+format = "flv"
+
+[locations]
+# Locations.
+main = {display_name = "Huntington", geocode=[40.86, -73.352222]}
+nearbyLocs = [
+    {display_name = "Islip", geocode=[40.732071, -73.186180]},
+    {display_name = "Babylon", geocode=[40.703949, -73.377678]},
+    {display_name = "Smithtown", geocode=[40.862778, -73.215278]},
+    {display_name = "Brookhaven", geocode=[40.816667, -72.933333]},
+    {display_name = "Southampton", geocode=[40.885278, -72.395278]},
+    {display_name = "Glen Cove", geocode=[40.867222, -73.627778]},
+    {display_name = "Long Beach", geocode=[40.588056, -73.688056]},
+    {display_name = "New York", geocode=[40.712778, -74.006111]},
+]
+
+[data]
+# How often should data update (in ms)
+data_time_update = 900000
+
+[lowerbar]
+# How long should a line should be (in ms)
+lb_text_duration = 5000
+
+[color]
+
+[color.dark]
+main_default_color = "#000000"
+main_alert_color = "#100000"
+
+main_text_color = "#f2f3f4"
+
+top_bar = "#031216"
+top_bar_alert = "#ff0f0f"
+bottom_bar = "#031216"
+
+top_bar_text_color = "#f2f3f4"
+top_bar_text_color_alert = "#000000"
+bottom_bar_text_color = "#f2f3f4"
+bottom_bar_text_color_time = "#ace7ff"
+
+[color.light]
+main_default_color = "#000000"
+main_alert_color = "#100000"
+
+main_text_color = "#f2f3f4"
+
+top_bar = "#031216"
+top_bar_alert = "#ff0f0f"
+bottom_bar = "#031216"
+
+top_bar_text_color = "#f2f3f4"
+top_bar_text_color_alert = "#000000"
+bottom_bar_text_color = "#f2f3f4"
+bottom_bar_text_color_time = "#ace7ff"
+
+[layout]
+# Intended resolution is 720x480. Is recommended to use resolutions with an aspect ratio of 4:3.
+resolution = [720,480]
